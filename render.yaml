@@ -1,0 +1,67 @@
+services:
+  - type: web
+    name: mydev-staging
+    env: docker
+    plan: free
+    branch: develop
+    rootDir: .
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: staging
+      - key: PORT
+        value: 10000
+      - key: SENTRY_DSN
+        sync: false   
+
+  - type: web
+    name: mydev-prod
+    env: docker
+    plan: free
+    branch: main
+    rootDir: .
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SENTRY_DSN
+        sync: false   
+
+  - type: web
+    name: alertmanager
+    env: docker
+    plan: free
+    rootDir: ./infra/alertmanager
+    dockerfilePath: Dockerfile
+    autoDeploy: false
+    envVars:
+      - key: SLACK_WEBHOOK_URL
+        sync: false   # set in Render dashboard
+      - key: PORT
+        value: 9093   # Alertmanager default port
+
+  - type: web
+    name: prometheus
+    env: docker
+    plan: free
+    rootDir: ./infra/prometheus
+    dockerfilePath: Dockerfile
+    autoDeploy: false
+    envVars:
+      - key: PORT
+        value: 9090
+
+  - type: web
+    name: grafana
+    env: docker
+    plan: free
+    rootDir: ./infra/grafana
+    dockerfilePath: Dockerfile
+    autoDeploy: false
+    envVars:
+      - key: PORT
+        value: 3000
